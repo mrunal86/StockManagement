@@ -1,72 +1,41 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
+﻿using StockManagement.DataAccessLayer;
 using System.Windows;
-using System.Configuration;
 
 namespace StockManagement
 {
+    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
+        private ICustomerDataAccessLayer _icust;
         public MainWindow()
         {
             InitializeComponent();
             
         }
-
+        
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            string Conn_string = ConfigurationManager.ConnectionStrings["Stock_string"].ConnectionString;
-            SqlParameter param;
-            int usercount;
-            try
+            var Cust_List = new LoginData();
+            Cust_List.Username = txtName.Text;
+            Cust_List.UserPassword = txtPassword.Password.ToString();
+
+            _icust = new CustomerDataAccessLayer();
+            var IsValid = _icust.IsValid(Cust_List);
+            if (IsValid > 0)
             {
-                using (SqlConnection conn = new SqlConnection(Conn_string))
-                {
-                    SqlCommand comm = new SqlCommand("SP_Login3", conn);
-                    comm.CommandType = CommandType.StoredProcedure;
-                    
-                    param = comm.Parameters.AddWithValue("@Username", txtName.Text);
-                    param = comm.Parameters.AddWithValue("@Password", txtPassword.Password);
-                    
-                    //Open the connection   
-                    conn.Open();
-                    //inner exception
-                    try
-                    {
-                        usercount = (Int32)comm.ExecuteScalar();
-                        if(usercount>0)
-                        {
-                            Stock_Main s = new Stock_Main();
-                            s.Show();
-                            this.Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Username or Password is incorrect");
-                        }
-                    }
-                    catch(Exception ec)
-                    {
-                        MessageBox.Show(ec.Message);
-                    }
-                    finally
-                    {
-                        conn.Close();
-                    }
-                 }
-                
+                Stock_Main s = new Stock_Main();
+                s.Show();
+                this.Close();
             }
-            //Catch outer Exception
-            catch(Exception exc)
+            else
             {
-                MessageBox.Show(exc.Message);
+                MessageBox.Show("Invalid Username or password");
             }
         }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Close();

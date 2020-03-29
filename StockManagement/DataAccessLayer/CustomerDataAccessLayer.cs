@@ -17,17 +17,17 @@ namespace StockManagement.DataAccessLayer
         {
             conn = new SqlConnection(Conn_string);
         }
-        
         //Return all customers
         public List<CustomerDataObjects> GetCustomers()
         {
             List<CustomerDataObjects> CustomerList = new List<CustomerDataObjects>();
-            string st = "Select Customer_ID,FirstName,LastName,Address,Customer_Type from Customer";
+           // string st = "Select Customer_ID,FirstName,LastName,Address,Customer_Type from Customer";
             try
             {
                 conn.Open();
-                using (SqlCommand comm = new SqlCommand(st, conn))
+                using (SqlCommand comm = new SqlCommand("SPCustSelect", conn))
                 {
+                    comm.CommandType = CommandType.StoredProcedure;
                     using (SqlDataReader reader = comm.ExecuteReader())
                     {
                         while(reader.Read())
@@ -60,13 +60,12 @@ namespace StockManagement.DataAccessLayer
         public void UpdateCustomer(CustomerDataObjects customer)
         {
             List<CustomerDataObjects> CustomerList = new List<CustomerDataObjects>();
-            string st1 = "Insert into Customer values (@Customer_ID,@FirstName,@LastName,@Address,@Customer_Type)";
-
             try
             {
                 conn.Open();
-                using (SqlCommand comm = new SqlCommand(st1, conn))
+                using (SqlCommand comm = new SqlCommand("SPCustAddUpdate", conn))
                 {
+                    comm.CommandType = CommandType.StoredProcedure;
                     comm.Parameters.AddWithValue("@Customer_ID", customer.Customer_ID);
                     comm.Parameters.AddWithValue("@FirstName", customer.FirstName);
                     comm.Parameters.AddWithValue("@LastName", customer.LastName);
@@ -74,7 +73,6 @@ namespace StockManagement.DataAccessLayer
                     comm.Parameters.AddWithValue("@Customer_Type", customer.Customer_Type);
                     comm.ExecuteNonQuery();
                 } 
-
             }
             catch (Exception ec)
             {
@@ -86,9 +84,61 @@ namespace StockManagement.DataAccessLayer
             }
 
         }
+        public int IsValid(LoginData LoginData)
+        {
+            int usercount=0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(Conn_string))
+                {
+                    SqlCommand comm = new SqlCommand("SP_Login3", conn);
+                    comm.CommandType = CommandType.StoredProcedure;
+
+                    comm.Parameters.AddWithValue("@Username", LoginData.Username);
+                    comm.Parameters.AddWithValue("@Password", LoginData.UserPassword);
+
+                    //Open the connection   
+                    conn.Open();
+                    //inner exception
+                    try
+                    {
+                        usercount = (Int32)comm.ExecuteScalar();
+                    }
+                    catch (Exception) { }
+                }
+            }
+            //Catch outer Exception
+            catch (Exception ec)
+            {
+                MessageBox.Show(ec.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return usercount;
+         }
         public void DeleteCustomer(CustomerDataObjects customer)
         {
-            throw new NotImplementedException();
+            List<CustomerDataObjects> CustomerList = new List<CustomerDataObjects>();
+            try
+            {
+                conn.Open();
+                using (SqlCommand comm = new SqlCommand("SPCustDelete", conn))
+                {
+                    comm.CommandType = CommandType.StoredProcedure;
+                    comm.Parameters.AddWithValue("@Customer_ID", customer.Customer_ID);
+                    comm.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ec)
+            {
+                MessageBox.Show(ec.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
     }
 }

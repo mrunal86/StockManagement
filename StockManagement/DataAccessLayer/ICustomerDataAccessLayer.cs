@@ -5,6 +5,8 @@ namespace StockManagement.DataAccessLayer
 {
     interface ICustomerDataAccessLayer
     {
+        //Login
+        int IsValid(LoginData LoginData);
         //Return all the customers
         List<CustomerDataObjects> GetCustomers();
 

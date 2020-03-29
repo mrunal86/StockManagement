@@ -13,5 +13,6 @@ namespace StockManagement.DataAccessLayer
         public string LastName { get; set; }
         public string Address { get; set; }
         public string Customer_Type { get; set; }
+        
     }
 }

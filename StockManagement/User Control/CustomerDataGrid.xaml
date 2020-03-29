@@ -17,7 +17,7 @@
             <Button  Name="AddButton" Click="AddButton_Click" Style="{StaticResource RoundButtonTemplate}" Margin="30,0"  Content="+" Background="Green"  />
             <Button  Name="Button" Click="DeleteButton_Click" Style="{StaticResource RoundButtonTemplate}" Margin="0,0" Content="-" Background="Red" />
         </StackPanel>
-        <DataGrid x:Name="CustomerdataGrid" CellEditEnding="CustomerdataGrid_CellEditEnding" Loaded="CustomerdataGrid_Loaded" HorizontalAlignment="Center" Height="300" Width="890" FontSize="12" CanUserDeleteRows="False" HeadersVisibility="Column">
+        <DataGrid SelectionChanged="CustomerdataGrid_Selected" x:Name="CustomerdataGrid" SelectionMode="Single" Loaded="CustomerdataGrid_Loaded" HorizontalAlignment="Center" Height="300" Width="890" FontSize="12" CanUserDeleteRows="False" HeadersVisibility="Column">
 
         </DataGrid>
     </Grid>

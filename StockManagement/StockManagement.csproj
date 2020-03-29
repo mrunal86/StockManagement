@@ -79,6 +79,7 @@
     <Compile Include="DataAccessLayer\CustomerDataObjects.cs" />
     <Compile Include="DataAccessLayer\CustomerDataAccessLayer.cs" />
     <Compile Include="DataAccessLayer\ICustomerDataAccessLayer.cs" />
+    <Compile Include="DataAccessLayer\LoginData.cs" />
     <Compile Include="Stock Main.xaml.cs">
       <DependentUpon>Stock Main.xaml</DependentUpon>
     </Compile>
